@@ -63,11 +63,12 @@
             backdrop-filter: blur(30px);
             z-index: 100;
             position: relative;
-            top: 10px;
+            top: 9px;
             left: 6px;
             display:flex;
             justify-content: center;
             align-items: center;
+
         }
         .drag_button:hover{
             background-color: rgba(255,255,255,0.4);
@@ -75,6 +76,7 @@
         .tool_box{
             display:grid;
             grid-template-columns: repeat(2 ,1fr);
+            grid-template-rows: 195px;
         }
         .button-content{
             flex-shrink: 0;
@@ -100,7 +102,8 @@
         <iframe id="view" src="/insert" frameborder="0" sandbox="allow-scripts allow-same-origin" ></iframe>
         <div class="panel tool_box"id="toolbox-div">
             <div class="drag_button Dlight-div"id="div_button" draggable="true" onclick="addDiv()"><div class="button-content">&lt;div&gt;</div></div>
-            <div class="drag_button Dlight-div"id="button_button" draggable="true"><div class="button-content">哭啊</div></div>
+            <div class="drag_button Dlight-div"id="button_button" draggable="true"><div class="button-content">&lt;button&gt;</div></div>
+            <div class="drag_button Dlight-div"id="h_button" draggable="true"><div class="button-content">&lt;h()&gt;</div></div>
         </div>
         <div class="panel"id="text-panel-div">文本面板內容</div>
         <div class="panel"id="DOM-visualizer-div">DOM可視化內容</div>

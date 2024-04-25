@@ -5,9 +5,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-html_content = "Edit this content..."
-# 添加變數存儲div的位置
-div_position = {'x': 50, 'y': 50}  # 初始位置
+
 
 @app.route('/insert')
 def insert_page():
