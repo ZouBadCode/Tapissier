@@ -135,12 +135,15 @@
             iframe.onload = function() {
                 var iframeContent = iframe.contentWindow.document;
                 var add_place = iframe.contentWindow.document.body;
+                console.log(iframeContent)
                 // 事件委派：監聽拖放事件
                 iframeContent.addEventListener('dragover', function(event) {
                     event.preventDefault(); // 允許放置
                 });
 
                 iframeContent.addEventListener('drop', function(event) {
+                    
+                    console.log(event)
                     event.preventDefault();
                     var type = event.dataTransfer.getData('text/type');
 
@@ -152,6 +155,8 @@
                         case 'newDiv':
                             createDiv(event, add_place);
                             break;
+                        case 'newh':
+                            createH(event, add_place)
                         default:
                             console.log('未知類型: ' + type);
                     }
@@ -173,6 +178,13 @@
                 parent.appendChild(div);
             }
 
+            function createH(event, parent) {
+                var h = document.createElement('h1');
+                h.innerHTML = '新h1(點擊修改h級別)';
+                setElementStyle(h, event);
+                parent.appendChild(h);
+            }
+
             function setElementStyle(element, event) {
                 element.style.position = 'absolute';
                 element.style.left = event.offsetX + 'px';
@@ -188,14 +200,17 @@
 
             // 設定拖動事件的相應數據
             document.getElementById('button_button').addEventListener('dragstart', function(event) {
-                
-                console.log(event)
                 event.dataTransfer.setData('text/type', 'newButton');
             });
 
             document.getElementById('div_button').addEventListener('dragstart', function(event) {
                 event.dataTransfer.setData('text/type', 'newDiv');
             });
+
+            document.getElementById('h_button').addEventListener('dragstart', function(event) {
+                event.dataTransfer.setData('text/type', 'newh');
+            });
+            
         function addDiv() {
             var iframe = document.getElementById('view');
             var newDiv = iframe.contentWindow.document.createElement('div');
