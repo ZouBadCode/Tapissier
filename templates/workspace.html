@@ -133,34 +133,8 @@
 
             // 設定 iframe 載入後的初始化
             iframe.onload = function() {
-                var iframeContent = iframe.contentWindow.document;
-                var add_place = iframe.contentWindow.document.body;
-                console.log(iframeContent)
+                CreateOverlayForEvent();
                 // 事件委派：監聽拖放事件
-                iframeContent.addEventListener('dragover', function(event) {
-                    event.preventDefault(); // 允許放置
-                });
-
-                iframeContent.addEventListener('drop', function(event) {
-                    
-                    console.log(event)
-                    event.preventDefault();
-                    var type = event.dataTransfer.getData('text/type');
-
-                    // 使用 switch 判斷類型並創建相應元素
-                    switch (type) {
-                        case 'newButton':
-                            createButton(event, add_place);
-                            break;
-                        case 'newDiv':
-                            createDiv(event, add_place);
-                            break;
-                        case 'newh':
-                            createH(event, add_place)
-                        default:
-                            console.log('未知類型: ' + type);
-                    }
-                });
             };
             });
 
@@ -197,18 +171,109 @@
                 element.style.cursor = 'pointer';
                 element.style.zIndex = '99';
             }
+            function CreateOverlayForEvent(){
+                const inserted_html = document.getElementById('view');
+                const html_info = inserted_html.getBoundingClientRect();
+                const overlay = document.createElement('div')
+                overlay.id = 'overlay_event';
+                overlay.style.position = 'fixed';
+                overlay.style.width = `${html_info.width}px`;
+                overlay.style.height = `${html_info.height}px`;
+                overlay.style.left = `${html_info.left}px`;
+                overlay.style.top = `${html_info.top}px`;
+                overlay.style.display = 'none';
+                overlay.style.zIndex = '101'
+                document.body.appendChild(overlay);
+            }
+            function create_detect(){
+                var iframe = document.getElementById('view');
+                var add_place = iframe.contentWindow.document.body;
+                var overlay_drop_origin = document.getElementById('overlay_event');
+                var overlay_drop = window.getComputedStyle(overlay_drop_origin);
+                function handleDragOver(event) {
+                        event.preventDefault(); // 允許放置
+                }
+                const inserted_html = document.getElementById('view');
+                const html_info = inserted_html.getBoundingClientRect();
+                if (overlay_drop.width != `${html_info.width}px` || overlay_drop.height != `${html_info.height}px`){       
+                    overlay_drop.style.width = `${html_info.width}px`;
+                    overlay_drop.style.height = `${html_info.height}px`;
+                    var overlay_drop = document.getElementById('overlay_event');
+                    overlay_drop.addEventListener('dragover',  handleDragOver);
+                    overlay_drop.addEventListener('drop', function handleDrop(event) {
+                        event.preventDefault();
+                        var type = event.dataTransfer.getData('text/type');
+                        hideOverlay();
 
+                        // 使用 switch 判斷類型並創建相應元素
+                        switch (type) {
+                            case 'newButton':
+                                createButton(event, add_place);
+                                break;
+                            case 'newDiv':
+                                createDiv(event, add_place);
+                                break;
+                            case 'newh':
+                                createH(event, add_place)
+                            default:
+                                console.log('未知類型: ' + type);
+                        }
+                        overlay_drop_else.removeEventListener('drop', handleDrop)
+                        overlay_drop_else.removeEventListener('dragover', handleDragOver)
+                    });
+                } else {
+                    var overlay_drop_else = document.getElementById('overlay_event');
+                    overlay_drop_else.addEventListener('dragover', handleDragOver);
+                    overlay_drop_else.addEventListener('drop', function handleDrop(event) {
+                        event.preventDefault();
+                        var type = event.dataTransfer.getData('text/type');
+                        hideOverlay();
+                        
+                        // 使用 switch 判斷類型並創建相應元素
+                        switch (type) {
+                            case 'newButton':
+                                createButton(event, add_place);
+                                break;
+                            case 'newDiv':
+                                createDiv(event, add_place);
+                                break;
+                            case 'newh':
+                                createH(event, add_place)
+                            default:
+                                console.log('未知類型: ' + type);
+                        }
+                        overlay_drop_else.removeEventListener('drop', handleDrop)
+                        overlay_drop_else.removeEventListener('dragover', handleDragOver)
+                    });
+                }
+
+            }
+
+            function showOverlay(){
+                const overlay = document.getElementById('overlay_event')
+                overlay.style.display= 'block'
+            }
+            function hideOverlay(){
+                const overlay = document.getElementById('overlay_event')
+                overlay.style.display= 'none'
+            }
             // 設定拖動事件的相應數據
             document.getElementById('button_button').addEventListener('dragstart', function(event) {
                 event.dataTransfer.setData('text/type', 'newButton');
+                showOverlay();
+                create_detect();
             });
 
             document.getElementById('div_button').addEventListener('dragstart', function(event) {
                 event.dataTransfer.setData('text/type', 'newDiv');
+                showOverlay();
+                create_detect();
             });
 
             document.getElementById('h_button').addEventListener('dragstart', function(event) {
                 event.dataTransfer.setData('text/type', 'newh');
+                showOverlay();
+                create_detect();
             });
             
         function addDiv() {
