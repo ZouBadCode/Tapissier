@@ -98,6 +98,7 @@
             <button class="topbar_button" id="toolbox-button"></button>
             <button class="topbar_button" id="text-panel-button"></button>
             <button class="topbar_button" id="DOM-visualizer-button"></button>
+            <button class="topbar_button" id="draw-button" onclick="enableDrawingMode()"></button>
         </header>
         <iframe id="view" src="/insert" frameborder="0" sandbox="allow-scripts allow-same-origin" ></iframe>
         <div class="panel tool_box"id="toolbox-div">
@@ -138,6 +139,7 @@
             };
             });
 
+
             function createButton(event, parent) {
                 var btn = document.createElement('button');
                 btn.innerHTML = '新按鈕';
@@ -160,9 +162,14 @@
             }
 
             function setElementStyle(element, event) {
+
+                const inserted_html = document.getElementById('view');
+                const insert_scroll = inserted_html.contentWindow
+                const html_info = inserted_html.getBoundingClientRect();
                 element.style.position = 'absolute';
-                element.style.left = event.offsetX + 'px';
-                element.style.top = event.offsetY + 'px';
+                element.style.left = event.offsetX - html_info.left + insert_scroll.scrollX + 'px';
+                element.style.top = event.offsetY - html_info.top + insert_scroll.scrollY + 'px';
+                console.log(element.style.left, element.style.top,event.offsetX,event.offsetY,html_info.left,html_info.top,inserted_html.scrollLeft,inserted_html.scrollTop )
                 element.style.padding = '10px';
                 element.style.backgroundColor = 'lightcoral';
                 element.style.color = 'white';
@@ -174,6 +181,7 @@
             function CreateOverlayForEvent(){
                 const inserted_html = document.getElementById('view');
                 const html_info = inserted_html.getBoundingClientRect();
+                console.log(html_info)
                 const overlay = document.createElement('div')
                 overlay.id = 'overlay_event';
                 overlay.style.position = 'fixed';
@@ -191,16 +199,17 @@
                 var overlay_drop_origin = document.getElementById('overlay_event');
                 var overlay_drop = window.getComputedStyle(overlay_drop_origin);
                 function handleDragOver(event) {
-                        event.preventDefault(); // 允許放置
+                    console.log(event)
+                    event.preventDefault(); // 允許放置
                 }
                 const inserted_html = document.getElementById('view');
                 const html_info = inserted_html.getBoundingClientRect();
                 if (overlay_drop.width != `${html_info.width}px` || overlay_drop.height != `${html_info.height}px`){       
                     overlay_drop.style.width = `${html_info.width}px`;
                     overlay_drop.style.height = `${html_info.height}px`;
-                    var overlay_drop = document.getElementById('overlay_event');
-                    overlay_drop.addEventListener('dragover',  handleDragOver);
-                    overlay_drop.addEventListener('drop', function handleDrop(event) {
+                    var overlay_drop_event = document.getElementById('overlay_event');
+                    overlay_drop_event.addEventListener('dragover',  handleDragOver);
+                    overlay_drop_event.addEventListener('drop', function handleDrop(event) {
                         event.preventDefault();
                         var type = event.dataTransfer.getData('text/type');
                         hideOverlay();
@@ -218,14 +227,15 @@
                             default:
                                 console.log('未知類型: ' + type);
                         }
-                        overlay_drop_else.removeEventListener('drop', handleDrop)
-                        overlay_drop_else.removeEventListener('dragover', handleDragOver)
+                        overlay_drop_event.removeEventListener('drop', handleDrop)
+                        overlay_drop_event.removeEventListener('dragover', handleDragOver)
                     });
                 } else {
-                    var overlay_drop_else = document.getElementById('overlay_event');
-                    overlay_drop_else.addEventListener('dragover', handleDragOver);
-                    overlay_drop_else.addEventListener('drop', function handleDrop(event) {
+                    var overlay_drop_event = document.getElementById('overlay_event');
+                    overlay_drop_event.addEventListener('dragover', handleDragOver);
+                    overlay_drop_event.addEventListener('drop', function handleDrop(event) {
                         event.preventDefault();
+                        console.log(event)
                         var type = event.dataTransfer.getData('text/type');
                         hideOverlay();
                         
@@ -242,8 +252,8 @@
                             default:
                                 console.log('未知類型: ' + type);
                         }
-                        overlay_drop_else.removeEventListener('drop', handleDrop)
-                        overlay_drop_else.removeEventListener('dragover', handleDragOver)
+                        overlay_drop_event.removeEventListener('drop', handleDrop)
+                        overlay_drop_event.removeEventListener('dragover', handleDragOver)
                     });
                 }
 
