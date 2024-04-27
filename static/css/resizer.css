@@ -1,0 +1,47 @@
+.resizable {
+    position: absolute;
+    left: 530px;
+    top: 200px;
+    width: 960px;
+    height: 540px;
+    z-index: 100;
+
+    /* Center the content */
+    align-items: center;
+    display: flex;
+    justify-content: center;
+
+    /* Misc */
+    border: 1px solid #cbd5e0;
+}
+.resizer {
+    position: absolute;
+}
+
+/* Placed at the right side */
+.resizer-r {
+    cursor: col-resize;
+    height: 100%;
+    right: 0;
+    top: 0;
+    width: 5px;
+}
+
+/* Placed at the bottom side */
+.resizer-b {
+    bottom: 0;
+    cursor: row-resize;
+    height: 5px;
+    left: 0;
+    width: 100%;
+}
+
+#view{
+    width: 100%; /* 寬度百分比基於其容器 */
+    height: 100%; /* 高度百分比基於其容器 */
+    border: none; /* 選擇性去除邊框 */
+}
+
+.user-select-none{
+    user-select: none;
+}

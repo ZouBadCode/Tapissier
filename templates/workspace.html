@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>workspace</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/resizer.css') }}">
     <style>
         body{
             overflow-x: hidden;
@@ -41,14 +42,6 @@
         .panel.show {
             transform: translateX(90px) scale(1); /* 同時回到原位並放大 */
             opacity: 1;
-        }
-        #view{
-            position: absolute;
-            left: 530px;
-            top: 200px;
-            width: 960px;
-            height: 540px;
-            z-index: 100;
         }
         .drag_button {
             padding: 10px;
@@ -100,7 +93,11 @@
             <button class="topbar_button" id="DOM-visualizer-button"></button>
             <button class="topbar_button" id="draw-button" onclick="enableDrawingMode()"></button>
         </header>
-        <iframe id="view" src="/insert" frameborder="0" sandbox="allow-scripts allow-same-origin" ></iframe>
+        <div class="resizable" id="resize_container">
+            <iframe id="view" src="/insert" frameborder="0" sandbox="allow-scripts allow-same-origin" ></iframe>
+            <div class="resizer resizer-r"></div>
+            <div class="resizer resizer-b"></div>
+        </div>
         <div class="panel tool_box"id="toolbox-div">
             <div class="drag_button Dlight-div"id="div_button" draggable="true" onclick="addDiv()"><div class="button-content">&lt;div&gt;</div></div>
             <div class="drag_button Dlight-div"id="button_button" draggable="true"><div class="button-content">&lt;button&gt;</div></div>
@@ -199,14 +196,13 @@
                 var overlay_drop_origin = document.getElementById('overlay_event');
                 var overlay_drop = window.getComputedStyle(overlay_drop_origin);
                 function handleDragOver(event) {
-                    console.log(event)
                     event.preventDefault(); // 允許放置
                 }
                 const inserted_html = document.getElementById('view');
                 const html_info = inserted_html.getBoundingClientRect();
-                if (overlay_drop.width != `${html_info.width}px` || overlay_drop.height != `${html_info.height}px`){       
-                    overlay_drop.style.width = `${html_info.width}px`;
-                    overlay_drop.style.height = `${html_info.height}px`;
+                if (overlay_drop.width != `${html_info.width}px` || overlay_drop.height != `${html_info.height}px`){   
+                    overlay_drop_origin.style.width = `${html_info.width}px`;
+                    overlay_drop_origin.style.height = `${html_info.height}px`;
                     var overlay_drop_event = document.getElementById('overlay_event');
                     overlay_drop_event.addEventListener('dragover',  handleDragOver);
                     overlay_drop_event.addEventListener('drop', function handleDrop(event) {
@@ -312,4 +308,5 @@
     });
 });
     </script>
+<script src="{{ url_for('static', filename='js/resizer.js')}}"></script>
 </html>
