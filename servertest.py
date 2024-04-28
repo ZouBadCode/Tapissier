@@ -27,4 +27,4 @@ def handle_position(data):
     emit('update position', data, broadcast=True)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, host="localhost", debug=True)
