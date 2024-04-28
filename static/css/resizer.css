@@ -24,14 +24,14 @@
     height: 100%;
     right: 0;
     top: 0;
-    width: 5px;
+    width: 10px;
 }
 
 /* Placed at the bottom side */
 .resizer-b {
     bottom: 0;
     cursor: row-resize;
-    height: 5px;
+    height: 10px;
     left: 0;
     width: 100%;
 }
