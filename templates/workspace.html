@@ -162,13 +162,13 @@
             }
 
             function setElementStyle(element, event) {
-
+                
                 const inserted_html = document.getElementById('view');
                 const insert_scroll = inserted_html.contentWindow
                 const html_info = inserted_html.getBoundingClientRect();
                 element.style.position = 'absolute';
-                element.style.left = event.offsetX - html_info.left + insert_scroll.scrollX + 'px';
-                element.style.top = event.offsetY - html_info.top + insert_scroll.scrollY + 'px';
+                element.style.left = event.offsetX - html_info.left + insert_scroll.scrollX - window.scrollX + 'px';
+                element.style.top = event.offsetY - html_info.top + insert_scroll.scrollY - window.scrollY + 'px';
                 console.log(element.style.left, element.style.top,event.offsetX,event.offsetY,html_info.left,html_info.top,inserted_html.scrollLeft,inserted_html.scrollTop )
                 element.style.padding = '10px';
                 element.style.backgroundColor = 'lightcoral';
@@ -203,9 +203,12 @@
                 }
                 const inserted_html = document.getElementById('view');
                 const html_info = inserted_html.getBoundingClientRect();
-                if (overlay_drop.width != `${html_info.width}px` || overlay_drop.height != `${html_info.height}px`){   
+                console.log(html_info.top)
+                if (overlay_drop.width != `${html_info.width}px` || overlay_drop.height != `${html_info.height}px` || overlay_drop.left != `${html_info.left}px` || overlay_drop.top !=`${html_info.top}px`){   
                     overlay_drop_origin.style.width = `${html_info.width}px`;
                     overlay_drop_origin.style.height = `${html_info.height}px`;
+                    overlay_drop_origin.style.top = `${html_info.top}px`;
+                    overlay_drop_origin.style.left = `${html_info.left}px`;
                     var overlay_drop_event = document.getElementById('overlay_event');
                     overlay_drop_event.addEventListener('dragover',  handleDragOver);
                     overlay_drop_event.addEventListener('drop', function handleDrop(event) {
