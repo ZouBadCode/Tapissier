@@ -135,37 +135,20 @@
             // 設定 iframe 載入後的初始化
             iframe.onload = function() {
                 CreateOverlayForEvent();
+                divAddSync()
                 // 事件委派：監聽拖放事件
             };
             });
 
 
-            function createButton(event, parent) {
-                var btn = document.createElement('button');
-                btn.innerHTML = '新按鈕';
-                setElementStyle(btn, event);
-                parent.appendChild(btn);
-            }
 
-            function createDiv(event, parent) {
-                var div = document.createElement('div');
-                div.innerHTML = '新 Div';
-                setElementStyle(div, event);
-                parent.appendChild(div);
-            }
 
-            function createH(event, parent) {
-                var h = document.createElement('h1');
-                h.innerHTML = '新h1(點擊修改h級別)';
-                setElementStyle(h, event);
-                parent.appendChild(h);
-            }
-
-            function setElementStyle(element, event) {
+            function setElementStyle(element, event, ID, elename) {
                 
                 const inserted_html = document.getElementById('view');
                 const insert_scroll = inserted_html.contentWindow
                 const html_info = inserted_html.getBoundingClientRect();
+                element.id = `${elename}-${ID}(autoID)`
                 element.style.position = 'absolute';
                 element.style.left = event.offsetX - html_info.left + insert_scroll.scrollX - window.scrollX + 'px';
                 element.style.top = event.offsetY - html_info.top + insert_scroll.scrollY - window.scrollY + 'px';
@@ -181,7 +164,6 @@
             function CreateOverlayForEvent(){
                 const inserted_html = document.getElementById('view');
                 const html_info = inserted_html.getBoundingClientRect();
-                console.log(html_info)
                 const overlay = document.createElement('div')
                 overlay.id = 'overlay_event';
                 overlay.style.position = 'fixed';
@@ -225,7 +207,8 @@
                                 createDiv(event, add_place);
                                 break;
                             case 'newh':
-                                createH(event, add_place)
+                                createH(event, add_place);
+                                break;
                             default:
                                 console.log('未知類型: ' + type);
                         }
@@ -237,7 +220,6 @@
                     overlay_drop_event.addEventListener('dragover', handleDragOver);
                     overlay_drop_event.addEventListener('drop', function handleDrop(event) {
                         event.preventDefault();
-                        console.log(event)
                         var type = event.dataTransfer.getData('text/type');
                         hideOverlay();
                         
@@ -250,7 +232,8 @@
                                 createDiv(event, add_place);
                                 break;
                             case 'newh':
-                                createH(event, add_place)
+                                createH(event, add_place);
+                                break;
                             default:
                                 console.log('未知類型: ' + type);
                         }
@@ -297,22 +280,10 @@
         }
         
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $(".Dlight-div").mousemove(function(event) {
-                var x = event.pageX - this.offsetLeft; // 獲得滑鼠相對於 div 左側的水平位置
-                var y = event.pageY - this.offsetTop;  // 獲得滑鼠相對於 div 頂部的垂直位置
-                var width = $(this).width();           // div 的寬度
-                var gradientX = x / width * 100;       // 計算漸變中心點的百分比位置
-
-                // 更新背景漸變，使漸變中心跟隨滑鼠位置
-                $(this).css("background", `linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) ${gradientX}%, rgba(128,186,232,0) 99%, rgba(125,185,232,0) 100%)`);
-            }).mouseleave(function() {
-        // 當滑鼠離開 div 時，恢復背景到初始狀態
-        $(this).css("background", 'rgba(255,255,255,0.1)');
-    });
-});
-    </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ url_for('static', filename='toolbox_js/js/toolbox_button_light.js')}}"></script>
 <script src="{{ url_for('static', filename='iframe_resizer/js/resizer.js')}}"></script>
+<script src="{{ url_for('static', filename='html- create-tool/div_create_sync.js')}}"></script>
+<script src="{{ url_for('static', filename='html- create-tool/btn_create_sync.js')}}"></script>
+<script src="{{ url_for('static', filename='html- create-tool/h_create_sync.js')}}"></script>
 </html>

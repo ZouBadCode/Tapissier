@@ -1,5 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template , jsonify, request
 from flask_socketio import SocketIO, emit
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -26,5 +27,23 @@ def handle_position(data):
     div_position = data
     emit('update position', data, broadcast=True)
 
+
+def read_counters():
+    with open('data.json', 'r') as file:
+        data = json.load(file)
+    return data.get('counters', {})
+
+def update_counters(counters):
+    with open('data.json', 'w') as file:
+        json.dump({'counters': counters}, file)
+
+@app.route('/get-id', methods=['GET'])
+def get_id():
+    value = request.args.get('value')
+    counters = read_counters()
+    counter = counters.get(value, 0) + 1
+    counters[value] = counter
+    update_counters(counters)
+    return jsonify({'id': f'{counter}'})
 if __name__ == '__main__':
     socketio.run(app, host="localhost", debug=True)
