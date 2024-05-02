@@ -46,4 +46,4 @@ def get_id():
     update_counters(counters)
     return jsonify({'id': f'{counter}'})
 if __name__ == '__main__':
-    socketio.run(app, host="localhost", debug=True)
+    socketio.run(app, host="127.0.0.1", debug=True)

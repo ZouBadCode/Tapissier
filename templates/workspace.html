@@ -3,6 +3,7 @@
 <head>
     <title>workspace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='iframe_resizer/css/resizer.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='icon/favicon.png') }}" type="image/png">
     <style>
         body{
             overflow-x: hidden;
@@ -136,6 +137,7 @@
             iframe.onload = function() {
                 CreateOverlayForEvent();
                 divAddSync()
+                highlightElementInIframe(iframe)
                 // 事件委派：監聽拖放事件
             };
             });
@@ -286,4 +288,5 @@
 <script src="{{ url_for('static', filename='html- create-tool/div_create_sync.js')}}"></script>
 <script src="{{ url_for('static', filename='html- create-tool/btn_create_sync.js')}}"></script>
 <script src="{{ url_for('static', filename='html- create-tool/h_create_sync.js')}}"></script>
+<script src="{{ url_for('static', filename='iframe_initialize/iframe_element_hover.js')}}"></script>
 </html>
