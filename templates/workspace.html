@@ -3,12 +3,13 @@
 <head>
     <title>workspace</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='iframe_resizer/css/resizer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='workplace/css/workspace-scrollbar.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icon/favicon.png') }}" type="image/png">
     <style>
         body{
             overflow-x: hidden;
             background-color: gray;
-            
+            height: 98vh;
         }
         #topbar{
             background-color: mediumturquoise;
@@ -87,9 +88,16 @@
         .Dlight-div{
             transition: background 0.5s;
         }
+        #inspector{
+            height: 100vh;
+            width:400px;
+            position:fixed;
+            right: 0px;
+            background-color: white;
+            top: 55px;
+        }
     </style>
 </head>
-
     <body>
         <header id="topbar">
             <button class="topbar_button" id="toolbox-button"></button>
@@ -109,11 +117,13 @@
         </div>
         <div class="panel"id="text-panel-div">文本面板內容</div>
         <div class="panel"id="DOM-visualizer-div">DOM可視化內容</div>
+        <div class="" id="inspector"></div>
     </body>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const buttons = document.querySelectorAll('.topbar_button');
             const panels = document.querySelectorAll('.panel');
+
 
             buttons.forEach((button, index) => {
                 button.addEventListener('click', () => {
@@ -139,6 +149,7 @@
                 divAddSync()
                 highlightElementInIframe(iframe)
                 // 事件委派：監聽拖放事件
+                initializeMouseDragForResizeContainer();
             };
             });
 
@@ -289,4 +300,5 @@
 <script src="{{ url_for('static', filename='html- create-tool/btn_create_sync.js')}}"></script>
 <script src="{{ url_for('static', filename='html- create-tool/h_create_sync.js')}}"></script>
 <script src="{{ url_for('static', filename='iframe_initialize/iframe_element_hover.js')}}"></script>
+<script src="{{ url_for('static', filename='iframe_resizer/js/mover.js')}}"></script>
 </html>

@@ -46,7 +46,7 @@ function highlightElementInIframe(iframe) {
                 canvas.style.top = `${rect.top + insert_html_window.scrollY - 5}px`;
                 canvas.style.pointerEvents = 'none';
                 canvas.style.display = 'block';
-                canvas.addEventListener('click', clickdiv);
+                element.addEventListener('click', clickdiv(event))
                 break;
         }
 
@@ -77,6 +77,8 @@ function highlightElementInIframe(iframe) {
     });
 }
 
-function clickdiv(){
-    console.log('click');
+function clickdiv(event_element){
+    return function(){
+        console.log(event_element);
+    }
 }
