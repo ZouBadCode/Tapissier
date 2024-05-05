@@ -1,4 +1,9 @@
-function highlightElementInIframe(iframe) {
+import {populatePanelWithEventTargetAttributes} from './inspector_panel_module/divInspector.js'
+
+
+
+
+export function highlightElementInIframe(iframe ,panel) {
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
     const insert_html = document.getElementById('view')
     const insert_html_window = insert_html.contentWindow
@@ -46,7 +51,7 @@ function highlightElementInIframe(iframe) {
                 canvas.style.top = `${rect.top + insert_html_window.scrollY - 5}px`;
                 canvas.style.pointerEvents = 'none';
                 canvas.style.display = 'block';
-                element.addEventListener('click', clickdiv(event))
+                element.addEventListener('click', clickdiv(event, panel))
                 break;
         }
 
@@ -77,8 +82,11 @@ function highlightElementInIframe(iframe) {
     });
 }
 
-function clickdiv(event_element){
+function clickdiv(event_element, panel){
     return function(){
         console.log(event_element);
+        console.log(panel)
+        populatePanelWithEventTargetAttributes(event_element, panel);
     }
 }
+

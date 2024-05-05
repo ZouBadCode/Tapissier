@@ -119,27 +119,15 @@
         <div class="panel"id="DOM-visualizer-div">DOM可視化內容</div>
         <div class="" id="inspector"></div>
     </body>
-    <script>
+    <script type="module">
+        import {highlightElementInIframe} from '../static/iframe_initialize/iframe_element_hover.js'
+        import {topbartoolchanger} from '../static/workspace_initialize/topbar_tool_changer/topbartoolchanger.js'
         document.addEventListener("DOMContentLoaded", function() {
-            const buttons = document.querySelectorAll('.topbar_button');
-            const panels = document.querySelectorAll('.panel');
+            topbartoolchanger()
+            const panel = document.getElementById('inspector');
+            const shadow_panel = panel.attachShadow({mode:'open'})
 
 
-            buttons.forEach((button, index) => {
-                button.addEventListener('click', () => {
-                    panels.forEach((panel, panelIndex) => {
-                        if (index === panelIndex) {
-                            if (panel.classList.contains('show')) {
-                                panel.classList.remove('show');
-                            } else {
-                                panel.classList.add('show');
-                            }
-                        } else {
-                            panel.classList.remove('show');
-                        }
-                    });
-                });
-            });
 
             var iframe = document.getElementById('view');
 
@@ -147,7 +135,7 @@
             iframe.onload = function() {
                 CreateOverlayForEvent();
                 divAddSync()
-                highlightElementInIframe(iframe)
+                highlightElementInIframe(iframe ,shadow_panel)
                 // 事件委派：監聽拖放事件
                 initializeMouseDragForResizeContainer();
             };
@@ -299,6 +287,6 @@
 <script src="{{ url_for('static', filename='html- create-tool/div_create_sync.js')}}"></script>
 <script src="{{ url_for('static', filename='html- create-tool/btn_create_sync.js')}}"></script>
 <script src="{{ url_for('static', filename='html- create-tool/h_create_sync.js')}}"></script>
-<script src="{{ url_for('static', filename='iframe_initialize/iframe_element_hover.js')}}"></script>
+<script type="module" src="{{ url_for('static', filename='iframe_initialize/iframe_element_hover.js')}}"></script>
 <script src="{{ url_for('static', filename='iframe_resizer/js/mover.js')}}"></script>
 </html>
