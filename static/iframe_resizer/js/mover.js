@@ -1,5 +1,5 @@
 // 新增 mouse down 事件處理器
-function initializeMouseDragForResizeContainer() {
+export function initializeMouseDragForResizeContainer() {
     // 初始化變數來保存移動狀態
     let isMiddleMouseButtonDown = false;
     let initialX, initialY;

@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='iframe_resizer/css/resizer.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='workplace/css/workspace-scrollbar.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='icon/favicon.png') }}" type="image/png">
+
     <style>
         body{
             overflow-x: hidden;
@@ -106,7 +107,7 @@
             <button class="topbar_button" id="draw-button" onclick="enableDrawingMode()"></button>
         </header>
         <div class="resizable" id="resize_container">
-            <iframe id="view" src="/insert" frameborder="0" sandbox="allow-scripts allow-same-origin" ></iframe>
+            <iframe id="view" src="/insert" frameborder="0" ></iframe>
             <div class="resizer resizer-r"></div>
             <div class="resizer resizer-b"></div>
         </div>
@@ -122,60 +123,30 @@
     <script type="module">
         import {highlightElementInIframe} from '../static/iframe_initialize/iframe_element_hover.js'
         import {topbartoolchanger} from '../static/workspace_initialize/topbar_tool_changer/topbartoolchanger.js'
+        import {initializeMouseDragForResizeContainer} from '../static/iframe_resizer/js/mover.js'
+        import {hideOverlay, showOverlay} from '../static/overlay_operate/js/overlay_hideandshow.js'
+        import {CreateOverlayForEvent} from '../static/overlay_operate/js/create_overlay.js'
         document.addEventListener("DOMContentLoaded", function() {
+
             topbartoolchanger()
             const panel = document.getElementById('inspector');
             const shadow_panel = panel.attachShadow({mode:'open'})
 
 
-
+                
             var iframe = document.getElementById('view');
+            iframe.src = iframe.src //reload iframe make sure iframe.onload(below) event activated
 
-            // 設定 iframe 載入後的初始化
             iframe.onload = function() {
+                console.log('load')
                 CreateOverlayForEvent();
-                divAddSync()
                 highlightElementInIframe(iframe ,shadow_panel)
                 // 事件委派：監聽拖放事件
                 initializeMouseDragForResizeContainer();
             };
             });
+            
 
-
-
-
-            function setElementStyle(element, event, ID, elename) {
-                
-                const inserted_html = document.getElementById('view');
-                const insert_scroll = inserted_html.contentWindow
-                const html_info = inserted_html.getBoundingClientRect();
-                element.id = `${elename}-${ID}(autoID)`
-                element.style.position = 'absolute';
-                element.style.left = event.offsetX - html_info.left + insert_scroll.scrollX - window.scrollX + 'px';
-                element.style.top = event.offsetY - html_info.top + insert_scroll.scrollY - window.scrollY + 'px';
-                console.log(element.style.left, element.style.top,event.offsetX,event.offsetY,html_info.left,html_info.top,inserted_html.scrollLeft,inserted_html.scrollTop )
-                element.style.padding = '10px';
-                element.style.backgroundColor = 'lightcoral';
-                element.style.color = 'white';
-                element.style.border = 'none';
-                element.style.borderRadius = '5px';
-                element.style.cursor = 'pointer';
-                element.style.zIndex = '99';
-            }
-            function CreateOverlayForEvent(){
-                const inserted_html = document.getElementById('view');
-                const html_info = inserted_html.getBoundingClientRect();
-                const overlay = document.createElement('div')
-                overlay.id = 'overlay_event';
-                overlay.style.position = 'fixed';
-                overlay.style.width = `${html_info.width}px`;
-                overlay.style.height = `${html_info.height}px`;
-                overlay.style.left = `${html_info.left}px`;
-                overlay.style.top = `${html_info.top}px`;
-                overlay.style.display = 'none';
-                overlay.style.zIndex = '101'
-                document.body.appendChild(overlay);
-            }
             function create_detect(){
                 var iframe = document.getElementById('view');
                 var add_place = iframe.contentWindow.document.body;
@@ -245,14 +216,6 @@
 
             }
 
-            function showOverlay(){
-                const overlay = document.getElementById('overlay_event')
-                overlay.style.display= 'block'
-            }
-            function hideOverlay(){
-                const overlay = document.getElementById('overlay_event')
-                overlay.style.display= 'none'
-            }
             // 設定拖動事件的相應數據
             document.getElementById('button_button').addEventListener('dragstart', function(event) {
                 event.dataTransfer.setData('text/type', 'newButton');
@@ -288,5 +251,7 @@
 <script src="{{ url_for('static', filename='html- create-tool/btn_create_sync.js')}}"></script>
 <script src="{{ url_for('static', filename='html- create-tool/h_create_sync.js')}}"></script>
 <script type="module" src="{{ url_for('static', filename='iframe_initialize/iframe_element_hover.js')}}"></script>
-<script src="{{ url_for('static', filename='iframe_resizer/js/mover.js')}}"></script>
+<script type="module" src="{{ url_for('static', filename='iframe_resizer/js/mover.js')}}"></script>
+<script type="module" src="{{ url_for('static', filename='overlay_operate/js/overlay_hideandshow.js')}}"></script>
+<script type="module" src="{{ url_for('static', filename='overlay_operate/js/create_overlay.js')}}"></script>
 </html>

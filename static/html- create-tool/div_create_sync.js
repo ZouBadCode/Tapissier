@@ -3,51 +3,8 @@ async function createDiv(event, parent) {
     div.innerHTML = '新 Div';
     const id =  await getDivId();
     console.log(id)
-    setElementStyle(div, event, id, "div");
+    setElementStyleDIV(div, event, id, "div");
     parent.appendChild(div);
-}
-
-
-
-
-// 假設 iframe 的 id 是 'targetFrame'
-const iframe = document.getElementById('view');
-
-function divAddSync(){
-    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-    console.log('test')
-    // 創建一個 MutationObserver 來監聽 DOM 變更
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.tagName === 'DIV') {
-                        // 偵測到新的 div 元素，將更動發送到伺服器
-                        console.log('New div added:', node);
-                        
-                    }
-                });
-            }
-        });
-    });
-
-    // 配置 observer 以監聽子元素的增加
-    const config = { childList: true, subtree: true };
-    observer.observe(iframeDocument.body, config);
-};
-
-// 定義一個函數來將變更發送到伺服器
-function updateServer(data) {
-    fetch('https://your-server.com/api/update', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ htmlContent: data })
-    })
-    .then(response => response.json())
-    .then(data => console.log('Server response:', data))
-    .catch(error => console.error('Error updating server:', error));
 }
 
 async function getDivId() {
@@ -62,4 +19,23 @@ async function getDivId() {
     } catch (error) {
         console.error('Error:', error);
     }
+}
+
+function setElementStyleDIV(element, event, ID, elename) {
+                
+    const inserted_html = document.getElementById('view');
+    const insert_scroll = inserted_html.contentWindow
+    const html_info = inserted_html.getBoundingClientRect();
+    element.id = `${elename}-${ID}(autoID)`
+    element.style.position = 'absolute';
+    element.style.left = event.offsetX - html_info.left + insert_scroll.scrollX - window.scrollX + 'px';
+    element.style.top = event.offsetY - html_info.top + insert_scroll.scrollY - window.scrollY + 'px';
+    console.log(element.style.left, element.style.top,event.offsetX,event.offsetY,html_info.left,html_info.top,inserted_html.scrollLeft,inserted_html.scrollTop )
+    element.style.padding = '10px';
+    element.style.backgroundColor = 'lightcoral';
+    element.style.color = 'white';
+    element.style.border = 'none';
+    element.style.borderRadius = '5px';
+    element.style.cursor = 'pointer';
+    element.style.zIndex = '99';
 }
