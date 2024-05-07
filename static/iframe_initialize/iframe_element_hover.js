@@ -3,7 +3,7 @@ import {populatePanelWithEventTargetAttributes} from './inspector_panel_module/d
 
 let isFocus = false
 let ifSame = false
-let element = null
+let element_click = null
 
 export function highlightElementInIframe(iframe ,panel) {
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -15,21 +15,9 @@ export function highlightElementInIframe(iframe ,panel) {
 
     // 在 iframe 内部为每个元素添加 mouseover 和 mouseleave 事件监听器
     iframeDoc.addEventListener('mouseover', function (event) {
-        if (element){
-            console.log(element, event.target)
-            if (element == event.target){
-                ifSame = true;
-            }
-            else{
-                element = event.target;
-                ifSame = false;
-            }
-        }else{
-            element = event.target;
-        }
 
-
-
+        const element = event.target
+        console.log(element)
         // 如果 canvas 尚未创建，则创建并设置 id
         if (!canvas) {
             canvas = document.createElement('canvas');
@@ -66,7 +54,13 @@ export function highlightElementInIframe(iframe ,panel) {
                 canvas.style.top = `${rect.top + insert_html_window.scrollY - 5}px`;
                 canvas.style.pointerEvents = 'none';
                 canvas.style.display = 'block';
-                element.addEventListener('click', clickdiv(event, panel))
+                console.log('add')
+                if (!element.hasAttribute('event-added')) {
+                    // 添加事件監聽器
+                    element.addEventListener('click', clickdiv(event, panel));
+                }
+                    // 標記已添加監聽器
+                element.setAttribute('event-added', 'true');
                 break;
         }
 
@@ -99,6 +93,19 @@ export function highlightElementInIframe(iframe ,panel) {
 
 function clickdiv(event_element, panel){
     return function(){
+        if (element_click){
+            console.log(element_click, event_element.target)
+            if (element_click == event_element.target){
+                ifSame = true;
+            }
+            else{
+                element_click = event_element.target;
+                ifSame = false;
+            }
+        }else{
+            element_click = event_element.target;
+        }
+
         if (!ifSame){
             isFocus = true;
             console.log(event_element);
