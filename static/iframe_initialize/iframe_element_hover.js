@@ -1,7 +1,9 @@
 import {populatePanelWithEventTargetAttributes} from './inspector_panel_module/divInspector.js'
 
 
-
+let isFocus = false
+let ifSame = false
+let element = null
 
 export function highlightElementInIframe(iframe ,panel) {
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -13,7 +15,20 @@ export function highlightElementInIframe(iframe ,panel) {
 
     // 在 iframe 内部为每个元素添加 mouseover 和 mouseleave 事件监听器
     iframeDoc.addEventListener('mouseover', function (event) {
-        const element = event.target;
+        if (element){
+            console.log(element, event.target)
+            if (element == event.target){
+                ifSame = true;
+            }
+            else{
+                element = event.target;
+                ifSame = false;
+            }
+        }else{
+            element = event.target;
+        }
+
+
 
         // 如果 canvas 尚未创建，则创建并设置 id
         if (!canvas) {
@@ -75,7 +90,7 @@ export function highlightElementInIframe(iframe ,panel) {
     iframeDoc.addEventListener('mouseout', function (event) {
         // 通过唯一的 id 删除 canvas 元素
         const canvasToRemove = iframeDoc.getElementById(canvasId);
-        if (canvasToRemove) {
+        if (canvasToRemove && isFocus == false) {
             canvasToRemove.remove();
             canvas = null;
         }
@@ -84,9 +99,12 @@ export function highlightElementInIframe(iframe ,panel) {
 
 function clickdiv(event_element, panel){
     return function(){
-        console.log(event_element);
-        console.log(panel)
-        populatePanelWithEventTargetAttributes(event_element, panel);
+        if (!ifSame){
+            isFocus = true;
+            console.log(event_element);
+            console.log(panel)
+            populatePanelWithEventTargetAttributes(event_element, panel);
+        }   
     }
 }
 
