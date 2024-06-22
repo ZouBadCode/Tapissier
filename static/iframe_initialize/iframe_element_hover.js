@@ -4,7 +4,7 @@ import {populatePanelWithEventTargetAttributes} from './inspector_panel_module/d
 let isFocus = false
 let ifSame = false
 let element_click = null
-
+let ifRenew = false
 export function highlightElementInIframe(iframe ,panel) {
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
     const insert_html = document.getElementById('view')
@@ -15,9 +15,8 @@ export function highlightElementInIframe(iframe ,panel) {
 
     // 在 iframe 内部为每个元素添加 mouseover 和 mouseleave 事件监听器
     iframeDoc.addEventListener('mouseover', function (event) {
-
         const element = event.target
-        console.log(element)
+        console.log(isFocus)
         // 如果 canvas 尚未创建，则创建并设置 id
         if (!canvas) {
             canvas = document.createElement('canvas');
@@ -89,29 +88,44 @@ export function highlightElementInIframe(iframe ,panel) {
             canvas = null;
         }
     });
-}
 
-function clickdiv(event_element, panel){
-    return function(){
-        if (element_click){
-            console.log(element_click, event_element.target)
-            if (element_click == event_element.target){
-                ifSame = true;
-            }
-            else{
-                element_click = event_element.target;
-                ifSame = false;
-            }
-        }else{
-            element_click = event_element.target;
+    function defocus(){
+        isFocus = false;
+        const canvasToRemove = iframeDoc.getElementById(canvasId);
+        if (canvasToRemove && isFocus == false) {
+            canvasToRemove.remove();
+            canvas = null;
+            ifRenew = true;
         }
-
-        if (!ifSame){
-            isFocus = true;
-            console.log(event_element);
-            console.log(panel)
-            populatePanelWithEventTargetAttributes(event_element, panel);
-        }   
+    }
+    function clickdiv(event_element, panel){
+        return function(){
+            if (ifRenew){
+                element_click = null
+            }
+            if (element_click){
+                console.log(element_click, event_element.target)
+                if (element_click == event_element.target){
+                    ifSame = true;
+                }
+                else{
+                    element_click = event_element.target;
+                    ifSame = false;
+                    document.addEventListener('click', defocus)
+                }
+            }else{
+                element_click = event_element.target;
+                document.addEventListener('click', defocus)
+            }
+    
+            if (!ifSame){
+                isFocus = true;
+                populatePanelWithEventTargetAttributes(event_element, panel);
+            }
+            ifRenew = false;
+        }
     }
 }
+
+
 
